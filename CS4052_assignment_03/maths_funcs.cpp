@@ -533,6 +533,22 @@ mat4 perspective (float fovy, float aspect, float near, float far) {
 }
 
 
+mat4 ortho(float left, float right, float bottom, float top, float near, float far){
+	float rightleft1 = 2.0 / (right - left);
+	float topbottom1 = 2.0f / (top - bottom);
+	float farnear1 = -2.0f / (far - near);
+	float rightleft2 = -((right + left) / (right - left));
+	float topbottom2 = -((top + bottom) / (top - bottom));
+	float farnear2 = -((far + near) / (far - near));
+	return mat4(
+		rightleft1, 0.0f, 0.0f, 0.0f,
+		0.0f, topbottom1, 0.0f, 0.0f,
+		0.0f, 0.0f, farnear1, 0.0f,
+		rightleft2, topbottom2, farnear2, 1.0f
+		);
+}
+
+
 /*------------------------------HAMILTON IN DA HOUSE!-----------------------------*/
 versor::versor () { }
 

@@ -29,6 +29,7 @@ int width = 800.0;
 int height = 600.0;
 GLuint loc1;
 GLuint loc2;
+float degree = 0.0f;
 
 // Shader Functions- click on + to expand
 #pragma region SHADER_FUNCTIONS
@@ -178,9 +179,10 @@ void display(){
 	//The model transform rotates the object by 45 degrees, the view transform sets the camera at -40 on the z-axis, and the perspective projection is setup using Antons method
 
 	// bottom-left
+	degree += 0.01f;
 	mat4 view = translate (identity_mat4 (), vec3 (0.0, 0.0, -40.0));
 	mat4 persp_proj = perspective(45.0, (float)width/(float)height, 0.1, 100.0);
-	mat4 model = rotate_z_deg (identity_mat4 (), 45);
+	mat4 model = rotate_y_deg (identity_mat4 (), degree);
 
 	glViewport (0, 0, width / 2, height / 2);
 	glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, persp_proj.m);
@@ -189,10 +191,36 @@ void display(){
 	glDrawArrays (GL_TRIANGLES, 0, teapot_vertex_count);
 
 	// bottom-right
+	mat4 ortho_proj = ortho(-1.5f, 1.5f, -2.5f, 2.5f, 10.0f, 200.0f);
+	mat4 model2 = identity_mat4();
+
+	glViewport(width / 2, 0, width / 2, height / 2);
+	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, ortho_proj.m);
+	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
+	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model2.m);
+	glDrawArrays(GL_TRIANGLES, 0, teapot_vertex_count);
 		
 	// top-left
+	mat4 persp_proj3 = perspective(45.0, (float)width / (float)height, 0.1, 100.0);
+	mat4 model3 = rotate_x_deg(identity_mat4(), 90);
+	mat4 look_at_view = look_at(vec3(-40.0f, 40.0f, 40.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+
+	glViewport(0, height / 2, width / 2, height / 2);
+	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj3.m);
+	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, look_at_view.m);
+	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model3.m);
+	glDrawArrays(GL_TRIANGLES, 0, teapot_vertex_count);
 
 	// top-right
+	mat4 view4 = translate(identity_mat4(), vec3(0.0, 0.0, -40.0));
+	mat4 persp_proj4 = perspective(45.0, (float)width / (float)height, 0.1, 100.0);
+	mat4 model4 = rotate_y_deg(identity_mat4(), 90);
+
+	glViewport(width / 2, height / 2, width / 2, height / 2);
+	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj4.m);
+	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view4.m);
+	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model4.m);
+	glDrawArrays(GL_TRIANGLES, 0, teapot_vertex_count);
 
     glutSwapBuffers();
 }
